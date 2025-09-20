@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Books - BookStore</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">BookStore</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}" class="active">Search</a></li>
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('profile') }}">Profile</a></li>
+        </ul>
+    </nav>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <h2>Find Your Next Read</h2>
+        <p>Explore thousands of books from classic literature to modern bestsellers. Use the search bar below to discover your favorite authors, genres, or trending books. Reading enriches your mind, opens new worlds, and inspires creativity. Here at BookStore, we make it easy to find your perfect book.</p>
+        
+        <form action="{{ url_for('search') }}" method="GET">
+            <input type="text" name="query" placeholder="Search by title, author, or genre" required>
+            <button type="submit">Search</button>
+        </form>
+    </section>
+
+    <!-- Book Results Section -->
+    <section class="search-results">
+        {% if query %}
+            <!-- Vulnerable: displaying user input directly for CTF -->
+            <p>You searched for: {{ query|safe }}</p>
+        {% else %}
+            <p>Popular and Recommended Books</p>
+        {% endif %}
+
+        {% if special_message %}
+            <div class="special-message">
+                <p>{{ special_message }}</p>
+            </div>
+        {% endif %}
+        
+        <div class="books-container">
+            {% for id, book in books.items() %}
+                {% if book.ctf != True %} {# Skip hidden CTF book #}
+                <div class="book">
+                    <a href="{{ url_for('book') }}?id={{ id }}">
+                        <img src="{{ url_for('static', filename='images/' + book.img) }}" alt="{{ book.title }}">
+                        <h3>{{ book.title }}</h3>
+                        <p>By {{ book.author }}. {{ book.desc }}</p>
+                    </a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+    </section>
+    <p class="hint-text"><em>Hint: Some inputs are reflected immediatelyb sometimes they’re more interactive than they seem...</em></p>
+
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

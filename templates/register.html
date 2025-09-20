@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Register - BookStore</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <!-- Nav -->
+  <nav>
+    <div class="logo">BookStore</div>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('index') }}">Home</a></li>
+      <li><a href="{{ url_for('search') }}">Search</a></li>
+      <li><a href="{{ url_for('login') }}">Login</a></li>
+      <li><a href="{{ url_for('profile') }}">Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- Register -->
+  <section class="register-section">
+    <h2>Create Your Account</h2>
+    <p>Sign up to access personalized recommendations and exclusive content.</p>
+
+    {% if error %}
+      <div class="error-box">{{ error }}</div>
+    {% endif %}
+
+    <form action="{{ url_for('register') }}" method="POST" novalidate>
+      <input type="text" name="fullname" placeholder="Full Name" value="{{ fullname|default('') }}" required>
+      <input type="email" name="email" placeholder="Email" value="{{ email|default('') }}" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+      <button type="submit">Register</button>
+    </form>
+
+    <p class="signup-link">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+
+    <p class="hint-text"><em>Hint: Sometimes typing unusual characters in the login fields can reveal secrets...</em></p>
+
+  </section>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

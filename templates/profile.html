@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>{{ user.name }} - Profile • BookStore</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+
+</head>
+<body>
+<nav>
+  <div class="logo">BookStore</div>
+  <ul class="nav-links">
+    <li><a href="{{ url_for('index') }}">Home</a></li>
+    <li><a href="{{ url_for('search') }}">Search</a></li>
+    <li><a href="{{ url_for('login') }}">Login</a></li>
+    <li><a href="{{ url_for('profile', id=request.args.get('id','1')) }}" class="active">Profile</a></li>
+  </ul>
+</nav>
+
+<div class="profile-container">
+  <!-- Sidebar Menu -->
+  <aside class="profile-sidebar">
+    <div class="profile-avatar">
+      <!-- placeholder circle avatar -->
+      <div class="avatar">{{ user.name.split(' ')[0][0]|upper }}</div>
+    </div>
+
+    <div class="profile-header">
+      <h2>{{ user.name }}</h2>
+      <p class="muted">{{ user.email }}</p>
+    </div>
+
+    <div class="sidebar-blurb">
+      <p>Member since <strong>{{ user.member_since }}</strong></p>
+      <p class="small">Status: <span class="status">Active</span></p>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li><a href="{{ url_for('profile', id=request.args.get('id','1')) }}">Account Info</a></li>
+      <li><a href="{{ url_for('search') }}">Explore Books</a></li>
+      <li><a href="{{ url_for('index') }}">Home</a></li>
+      <li><a href="{{ url_for('login') }}">Logout</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Profile Content -->
+  <main class="profile-main">
+    <h2>Account Overview</h2>
+
+    <p class="lead">
+      Welcome back, <strong>{{ user.name }}</strong>. This page shows a snapshot of your account - membership details,
+      reading interests, and recent activity. You can't change info here (view-only in this lab).
+    </p>
+
+    <!-- Read-only profile form (GET-only / not editable) -->
+    <section class="profile-card">
+      <h3>Basic Information</h3>
+
+      <form action="{{ url_for('profile') }}" method="GET" class="readonly-form" novalidate>
+        <!-- include id so navigation keeps context -->
+        <input type="hidden" name="id" value="{{ request.args.get('id','1') }}">
+
+        <label for="fullname">Full Name</label>
+        <input id="fullname" type="text" name="fullname" value="{{ user.name }}" readonly>
+
+        <label for="email">Email</label>
+        <input id="email" type="text" name="email" value="{{ user.email }}" readonly>
+
+        <label for="member">Member Since</label>
+        <input id="member" type="text" name="member" value="{{ user.member_since }}" readonly>
+      </form>
+    </section>
+
+    <!-- Profile Image Upload Section -->
+    <section class="profile-upload" style="background:#f9f9f9; border:1px solid #ddd; padding:20px; margin-top:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+        <h3 style="color:#333; font-size:1.5em; margin-bottom:10px;">Upload a Profile Image</h3>
+        <p style="color:#555; font-size:0.95em; margin-bottom:15px;">
+            You can upload an image for your profile. 
+        </p>
+        
+        <form method="POST" action="{{ url_for('upload_profile') }}" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:10px;">
+            <input type="file" name="file" required style="padding:8px; border-radius:4px; border:1px solid #ccc;">
+            <button type="submit" style="background:#4CAF50; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; font-weight:bold; transition:0.3s;">
+                Upload Profile Image
+            </button>
+        </form>
+
+        {% if profile_upload_flag %}
+        <div class="profile-flag" style="background:#e6fffa; border:1px solid #0cf0a0; padding:10px; margin-top:15px; border-radius:5px;">
+            <p style="margin:0; color:#0a6f5f; font-weight:bold;">
+                <strong>CTF Flag for Profile Upload:</strong> {{ profile_upload_flag }}
+            </p>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Fake profile paragraphs for realism -->
+    <section class="profile-info">
+      <h3>About this account</h3>
+      <p>
+        {{ user.name }} is listed as an avid reader with interests in <strong>classic literature, fantasy</strong>, and
+        <strong>historical fiction</strong>. The account frequently adds titles to the wishlist and leaves thoughtful reviews.
+      </p>
+
+      <h4>Favorite genres</h4>
+      <p class="small">Classic literature · Fantasy · Adventure · Historical</p>
+
+      <h4>Recommended for you</h4>
+      <div class="recommendations">
+        <div class="rec">
+          <img src="{{ url_for('static', filename='images/book1.jpg') }}" alt="rec1">
+          <p><strong>To Kill a Mockingbird</strong><br><span class="muted">Harper Lee</span></p>
+        </div>
+        <div class="rec">
+          <img src="{{ url_for('static', filename='images/book4.jpg') }}" alt="rec2">
+          <p><strong>The Hobbit</strong><br><span class="muted">J.R.R. Tolkien</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activity feed + membership info -->
+    <section class="membership-info big">
+      <h3>Account Activity</h3>
+      <ul class="activity-list">
+        <li>Reviewed <strong>The Great Gatsby</strong> - "A vivid exploration of the Jazz Age" (3 days ago)</li>
+        <li>Added <strong>1984</strong> to wishlist (2 weeks ago)</li>
+        <li>Purchased <strong>Harry Potter and the Philosopher's Stone</strong> (1 month ago)</li>
+      </ul>
+
+      <div class="membership-stats">
+        <p><strong>Total Reviews:</strong> 12</p>
+        <p><strong>Wishlist Items:</strong> 6</p>
+      </div>
+    </section>
+    <p class="hint-text"><em>Tip: Curious users sometimes explore different IDs in the URL...</em></p>
+
+    <!-- IDOR CTF Flag (keeps same behavior) -->
+    {% if special_flag %}
+      <div class="flag-message">
+        <p>{{ special_flag }}</p>
+      </div>
+    {% endif %}
+  </main>
+</div>
+<footer>
+  <div class="footer-container">
+    <p>&copy; 2025 Online Bookstore. All Rights Reserved.</p>
+    <ul class="footer-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

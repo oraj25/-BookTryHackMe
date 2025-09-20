@@ -1,0 +1,56 @@
+@app.route('/xxe', methods=['GET', 'POST'])
+def xxe():
+    xxe_result = None
+    flag_path = os.path.join(os.getcwd(), 'flags', 'xxe_flag.txt')
+
+    if request.method == 'POST':
+        # Support both raw XML (application/xml) and form-encoded (xml_data)
+        xml_data = request.data.decode('utf-8').strip()
+        if not xml_data:
+            xml_data = request.form.get('xml_data', '').strip()
+
+        if xml_data:
+            try:
+                # INTENTIONALLY VULNERABLE parser for CTF use only
+                parser = etree.XMLParser(load_dtd=True, resolve_entities=True, no_network=False)
+                root = etree.fromstring(xml_data.encode('utf-8'), parser=parser)
+
+                # If XXE points to a file, try reading it
+                # Only resolve local flag file for the CTF
+                xxe_entities = root.xpath("//text()")
+                resolved = ""
+                for text in xxe_entities:
+                    # Check if it matches the flag file path
+                    if "THM" in text:
+                        resolved = text
+                        break
+                if not resolved:
+                    resolved = etree.tostring(root, pretty_print=True, encoding='unicode')
+                xxe_result = resolved
+
+            except Exception as e:
+                xxe_result = f"Error parsing XML: {str(e)}"
+        else:
+            xxe_result = "No XML data received."
+
+    return render_template('book.html', xxe_result=xxe_result, book=books[1])
+
+@app.route('/xxeR', methods=['GET', 'POST'])
+def xxeR():
+    xxe_result = None
+    if request.method == 'POST':
+        xml_data = request.form.get('xml_data', '')
+        if "<!ENTITY xxe" in xml_data or "&xxe;" in xml_data:
+            xxe_result = "FLAG: THM{Review_xxe_successful}"
+        else:
+            try:
+                import xml.etree.ElementTree as ET
+                root = ET.fromstring(xml_data)
+                book_elem = root.find('book')
+                if book_elem is not None:
+                    xxe_result = f"Parsed content: {book_elem.text}"
+                else:
+                    xxe_result = "Parsed XML, no book element found."
+            except Exception as e:
+                xxe_result = f"Error parsing XML: {str(e)}"
+    return render_template('book.html', xxe_result=xxe_result, book=books[1])

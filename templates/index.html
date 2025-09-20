@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Bookstore</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">BookStore</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('profile') }}">Profile</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Welcome to BookStore</h1>
+        <p>Discover a world of knowledge, stories, and adventures. From timeless classics to modern bestsellers, we bring books closer to you.</p>
+        <a href="{{ url_for('search') }}" class="btn">Explore Books</a>
+
+
+
+    </section>
+
+    <!-- Importance of Books Section -->
+    <section class="importance">
+        <h2>The Importance of Books</h2>
+        <p>Books are windows to the world, offering knowledge, entertainment, and inspiration. They help us understand cultures, improve critical thinking, and enhance creativity. Reading regularly not only expands our vocabulary but also strengthens empathy by exposing us to diverse perspectives. In today's fast-paced digital age, books remain a vital source of deep learning and reflection.</p>
+    </section>
+
+    <!-- History of Books Section -->
+    <section class="history">
+        <h2>The History of Books</h2>
+        <p>Books have evolved tremendously over the centuries. From ancient clay tablets and papyrus scrolls to the invention of the printing press in the 15th century, books have been a cornerstone of human civilization. Each era introduced innovations in how knowledge is recorded and shared, shaping the way societies communicate and preserve their heritage. Today, digital books complement traditional print, making literature more accessible than ever before.</p>
+    </section>
+
+    <!-- Popular Books Section -->
+    <section class="popular-books">
+        <h2>Popular Books</h2>
+        <div class="books-container">
+            {% for id, book in books.items() %}
+                {% if book.ctf != True %} {# Skip hidden CTF book #}
+                <div class="book">
+                    <a href="{{ url_for('book') }}?id={{ id }}">
+                        <img src="{{ url_for('static', filename='images/' + book.img) }}" alt="{{ book.title }}">
+                        <h3>{{ book.title }}</h3>
+                        <p>By {{ book.author }}. {{ book.desc }}</p>
+                    </a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Online Bookstore. All rights reserved.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

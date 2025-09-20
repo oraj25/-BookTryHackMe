@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BookStore</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">BookStore</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+            <li><a href="{{ url_for('login') }}" class="active">Login</a></li>
+            <li><a href="{{ url_for('register') }}">Register</a></li>
+            <li><a href="{{ url_for('profile') }}">Profile</a></li>
+        </ul>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <h2>Login to Your Account</h2>
+        <p>Welcome back! Enter your email and password to access your account and explore amazing books.</p>
+        
+        <!-- Vulnerable login form for CTF -->
+        <form action="{{ url_for('login') }}" method="POST">
+            <input type="text" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <p class="signup-link">Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+
+        <!-- Hint for players (optional for CTF) -->
+        <p class="hint-text"><em>Hint: Sometimes typing unusual characters in the login fields can reveal secrets...</em></p>
+
+    </section>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

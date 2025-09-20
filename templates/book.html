@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.title }} - BookStore</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">BookStore</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('profile') }}">Profile</a></li>
+        </ul>
+    </nav>
+
+    <!-- Book Details Section -->
+    <section class="book-details">
+        <div class="book-image">
+            <img src="{{ url_for('static', filename='images/' + book.img) }}" alt="{{ book.title }}">
+        </div>
+        <div class="book-info">
+            <h2>{{ book.title }}</h2>
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <p><strong>Genre:</strong> {{ book.genre }}</p>
+            <p><strong>Description:</strong> {{ book.desc }}</p>
+
+            {% if special_flag %}
+                <div class="flag-message">
+                    <p>{{ special_flag }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="reviews-section">
+        <h2>Reader Reviews</h2>
+        <p>Share your thoughts about the book or read what others have to say. Sometimes, you might even uncover hidden secrets if you’re curious!</p>
+        
+        <!-- Review Form -->
+        <form method="POST" action="{{ url_for('xxe') }}">
+            <textarea name="xml_data" placeholder="Submit your review here " required></textarea>
+            <button type="submit">Submit Review</button>
+        </form>
+
+         <!-- XXE Flag Display -->
+        {% if xxe_flag %}
+        <div class="xxe-flag" style="background:#fffae6; border:1px solid #f0c36d; padding:10px; margin-top:10px; border-radius:5px;">
+            <p style="margin:0;"><strong>XXE CTF Flag:</strong> {{ xxe_flag }}</p>
+        </div>
+        {% endif %}
+
+        <!-- File Upload Section -->
+        <section class="review-upload" style="background:#f9f9f9; border:1px solid #ddd; padding:20px; margin-top:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+            <h3 style="color:#333; font-size:1.5em; margin-bottom:10px;">Upload an image with your review</h3>
+            <p style="color:#555; font-size:0.95em; margin-bottom:15px;">
+                You can upload an image or a .txt file for your review. 
+            </p>
+
+            <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:10px;">
+                <input type="file" name="file" required style="padding:8px; border-radius:4px; border:1px solid #ccc;">
+                <button type="submit" style="background:#4CAF50; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; font-weight:bold; transition:0.3s;">
+                    Upload Image
+                </button>
+            </form>
+
+            {% if upload_flag %}
+            <div class="upload-flag" style="background:#e6fffa; border:1px solid #0cf0a0; padding:10px; margin-top:15px; border-radius:5px;">
+                <p style="margin:0; color:#0a6f5f; font-weight:bold;">
+                    <strong>CTF Flag for File Upload:</strong> {{ upload_flag }}
+                </p>
+            </div>
+            {% endif %}
+        </section>
+
+
+        <!-- Example Reviews -->
+        <div class="reviews-container">
+            <div class="review">
+                <p><strong>Alice:</strong> An eye-opening story that makes you reflect on justice and humanity.</p>
+            </div>
+            <div class="review">
+                <p><strong>John:</strong> A beautifully written novel that is both emotional and thought-provoking.</p>
+            </div>
+        </div>
+
+        
+        <!-- Visible hint -->
+        <p class="hint-text"><em>Hint: Try thinking outside the box - XML can hold hidden secrets!</em></p>
+    </section
+
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
